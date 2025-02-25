@@ -1,0 +1,21 @@
+{
+    "company": {
+      "name": "TechCorp",
+      "departments": [
+        {
+          "name": "Engineering",
+          "employees": [
+            {"name": "Alice", "role": "Developer"},
+            {"name": "Bob", "role": "DevOps"}
+          ]
+        },
+        {
+          "name": "HR",
+          "employees": [
+            {"name": "Charlie", "role": "Recruiter"},
+            {"name": "Dave", "role": "Manager"}
+          ]
+        }
+      ]
+    }
+  }
