@@ -1,0 +1,56 @@
+name: jqr CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+          components: clippy, rustfmt
+
+      - name: Cache Dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: rust-${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            rust-${{ runner.os }}-
+
+      - name: Install Cargo Audit
+        run: cargo install cargo-audit || true  # Ensure cargo-audit is installed
+
+      - name: Check for Security Vulnerabilities
+        run: cargo audit
+
+      - name: Check Syntax and Type Errors (Fast)
+        run: cargo check --verbose
+
+      - name: Build Project
+        run: cargo build --verbose
+
+      - name: Run Clippy (Linting)
+        run: cargo clippy -- -D warnings
+
+      - name: Check Formatting
+        run: cargo fmt -- --check
+
+      - name: Run Tests
+        run: cargo test --verbose
